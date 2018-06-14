@@ -73,7 +73,7 @@ class CsvSnifferTest < Minitest::Test
   def test_file1
     assert_equal ",", CsvSniffer.detect_delimiter(@@file1.path)
     assert_equal false, CsvSniffer.is_quote_enclosed?(@@file1.path)
-    assert_equal nil, CsvSniffer.get_quote_char(@@file1.path)
+    assert_nil CsvSniffer.get_quote_char(@@file1.path)
     assert_equal true, CsvSniffer.has_header?(@@file1.path)
     assert_equal "Name,Number", CsvSniffer.first_line(@@file1.path)
     assert_equal ["Name","Number"], CsvSniffer.first_row(@@file1.path)
@@ -95,7 +95,7 @@ class CsvSnifferTest < Minitest::Test
   def test_file4
     assert_equal "\t", CsvSniffer.detect_delimiter(@@file4.path)
     assert_equal false, CsvSniffer.is_quote_enclosed?(@@file4.path)
-    assert_equal nil, CsvSniffer.get_quote_char(@@file4.path)
+    assert_nil CsvSniffer.get_quote_char(@@file4.path)
     assert_equal false, CsvSniffer.has_header?(@@file4.path)
   end
 
@@ -112,7 +112,7 @@ class CsvSnifferTest < Minitest::Test
 
   def test_file7
     assert_equal false, CsvSniffer.has_header?(@@file7.path)
-    assert_equal nil, CsvSniffer.get_quote_char(@@file7.path)
+    assert_nil CsvSniffer.get_quote_char(@@file7.path)
     assert_equal ",", CsvSniffer.detect_delimiter(@@file7.path)
   end
 
@@ -133,7 +133,7 @@ class CsvSnifferTest < Minitest::Test
   def test_file10
     assert_equal ";", CsvSniffer.detect_delimiter(@@file10.path)
     assert_equal false, CsvSniffer.is_quote_enclosed?(@@file10.path)
-    assert_equal nil, CsvSniffer.get_quote_char(@@file10.path)
+    assert_nil CsvSniffer.get_quote_char(@@file10.path)
     assert_equal true, CsvSniffer.has_header?(@@file10.path)
   end
 

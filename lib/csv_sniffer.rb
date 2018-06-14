@@ -3,6 +3,8 @@ require 'csv'
 # This class contains functions to heuristically decipher certain information from a CSV file
 class CsvSniffer
 
+    DEFAULT_LINES_TO_READ = 10_000
+
     # Reads the first line of the csv and returns the endline characters used
     #
     # Example:
@@ -11,12 +13,13 @@ class CsvSniffer
     #
     # Arguments:
     #   filepath: (String)
+    #   lines: (int) number of lines to read, default 10,000
 
-    def self.detect_endline(filepath)
+    def self.detect_endline(filepath, lines: DEFAULT_LINES_TO_READ)
       begin
         file = File.open(filepath, binmode: 'rt', encoding: 'bom|utf-8:utf-8')
         # Prevent large files with \r ending from reading the entire contents by limiting
-        file.readline(10_000)[/[\r\n]+/]
+        file.readline(DEFAULT_LINES_TO_READ)[/[\r\n]+/]
       rescue EOFError
         $/
       end
@@ -30,9 +33,10 @@ class CsvSniffer
     #
     # Arguments:
     #   filepath: (String)
+    #   lines: (String) number of lines to read, default 10,000
 
-    def self.lines(filepath, &block)
-      File.foreach(filepath, detect_endline(filepath), binmode: 'rt', encoding: 'bom|utf-8:utf-8', &block)
+    def self.lines(filepath, lines: DEFAULT_LINES_TO_READ, &block)
+      File.foreach(filepath, detect_endline(filepath, lines: lines), binmode: 'rt', encoding: 'bom|utf-8:utf-8', &block)
     end
 
     # Reads the first line of the csv. Returns nil if no first line exists
@@ -67,9 +71,9 @@ class CsvSniffer
     # Arguments:
     #   filepath: (String)
 
-    def self.rows(filepath, &block)
+    def self.rows(filepath, lines: DEFAULT_LINES_TO_READ, &block)
       delim = detect_delimiter(filepath)
-      endline = detect_endline(filepath)
+      endline = detect_endline(filepath, lines: lines)
       CSV.foreach(filepath, row_sep: endline, col_sep: delim, encoding: 'bom|utf-8:utf-8', &block)
     end
 
