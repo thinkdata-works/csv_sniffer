@@ -38,7 +38,8 @@ See [`test_csv_sniffer.rb`](test/test_csv_sniffer.rb) for more examples.
 ## Tests
 
 ```
-$ rake test
+$ docker build -t csv_sniffer_container .
+$ docker run -t csv_sniffer_container rspec
 ```
 
 
