@@ -5,6 +5,8 @@ describe CsvSniffer do
     described_class
   end
 
+  UTF_16_BOM = "\xFF\xFE".force_encoding('utf-16le')
+
   context 'csv file' do
     before(:all) do
       @csv_file = Tempfile.new('fil1e', binmode: 'wt+')
@@ -171,8 +173,72 @@ describe CsvSniffer do
 
     after(:all) { @empty.close }
 
+    it 'should return the default delimiater' do
+      expect(dc.detect_delimiter(@empty)).to eq(",")
+    end
+
+    it 'should detect no header' do
+      expect(dc.has_header?(@empty)).to be_falsey
+    end
+
+    it 'should detect no quote character' do
+      expect(dc.get_quote_char(@empty)).to be_nil
+    end
+  end
+
+  context 'psv file with quotes' do
+    before(:all) do
+      @psv = Tempfile.new('file8', binmode: 'wt+')
+      @psv.puts '"Name"|"Phone"|"Age"'
+      @psv.puts '"Doe,,,,,, John"|"555-123-4567"|"31"'
+      @psv.puts %{"Jane C. Doe"|"555-000-1234\t"|"30"}
+      @psv.rewind
+    end
+
+    after(:all) { @psv.close }
+
+    it 'should detect the delimiter' do
+      expect(dc.detect_delimiter(@psv)).to eq("|")
+    end
+
+    it 'should detect if quote enclosed' do
+      expect(dc.is_quote_enclosed?(@psv)).to be_truthy
+    end
+
+    it 'should get the quote character' do
+      expect(dc.get_quote_char(@psv)).to eq('"')
+    end
+
+    it 'should determine if file contains a header' do
+      expect(dc.has_header?(@psv)).to be_truthy
+    end
+  end
+
+  context 'with non-standard encoding' do
+    before(:all) do
+      @file = Tempfile.new('file10', binmode: 'wt+', encoding: 'utf-16le')
+      @file.puts UTF_16_BOM + 'Name;Phone;Age'.encode('utf-16le')
+      @file.puts '"Doe John";"555-123-4567";31'
+      @file.puts %{"Jane C. Doe";"555-000-1234\t";30'}
+      @file.rewind
+    end
+
+    after(:all) { @file.close }
+
     it 'should detect delimiter' do
-      # TODO .. finish these
+      expect(dc.detect_delimiter(@file)).to eq(';')
+    end
+
+    it 'should detect if quote enclosed' do
+      expect(dc.is_quote_enclosed?(@file)).to be_falsey
+    end
+
+    it 'should detect no quote character' do
+      expect(dc.get_quote_char(@file)).to be_nil
+    end
+
+    it 'should detect the header' do
+      expect(dc.has_header?(@file)).to be_truthy
     end
   end
 end

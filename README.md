@@ -32,7 +32,7 @@ is_quote_enclosed = CsvSniffer.is_quote_enclosed?("/path/to/some_file.csv") #=> 
 has_header = CsvSniffer.has_header?("/path/to/some_file.csv") #=> true
 ```
 
-See [`test_csv_sniffer.rb`](test/test_csv_sniffer.rb) for more examples.
+See [`csv_sniffer_spec.rb`](spec/csv_sniffer_spec.rb) for more examples.
 
 
 ## Tests
