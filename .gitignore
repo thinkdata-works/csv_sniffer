@@ -1,2 +1,19 @@
 *.gem
 
+/.bundle/
+/.yardoc
+/Gemfile.lock
+/_yardoc/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/
+/vendor/
+*.bundle
+*.so
+*.o
+*.a
+dockercfg.env
+
+mkmf.log
+.idea
