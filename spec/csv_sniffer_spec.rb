@@ -241,4 +241,40 @@ describe CsvSniffer do
       expect(dc.has_header?(@file)).to be_truthy
     end
   end
+
+  context 'with carriage return newlines' do
+    before(:all) do
+      @file = Tempfile.new('file11', binmode: 'wt+')
+      @file.puts(
+        "Name,Phone,Age\r\n" + 
+        "John Doe,555-123-4567,19\r\n" +
+        "Jane Doe,555-000-1234,22\r\n"
+      )
+      @file.rewind
+    end
+
+    after(:all) { @file.close }
+
+    it 'should detect the endline' do
+      expect(dc.detect_endline(@file)).to eq("\r\n")
+    end
+  end
+
+  context 'with only carriage returns' do
+     before(:all) do
+      @file = Tempfile.new('file12', binmode: 'wt+')
+      @file.puts(
+        "Name,Phone,Age\r" + 
+        "John Doe,555-123-4567,19\r" +
+        "Jane Doe,555-000-1234,22\r"
+      )
+      @file.rewind
+    end
+
+    after(:all) { @file.close }
+
+    it 'should detect the endline' do
+      expect(dc.detect_endline(@file)).to eq("\r")
+    end
+  end
 end
